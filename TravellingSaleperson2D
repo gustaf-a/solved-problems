@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KattisSolutions
+{
+
+    // 1≤N≤1000 
+    //https://open.kattis.com/problems/tsp
+    public class TravellingSalesperson2D
+    {
+        public struct PointXY
+        {
+            public double X;
+            public double Y;
+
+            //public override string ToString()
+            //{
+            //    return "X: " + X.ToString() + ", Y: " + Y.ToString();
+            //}
+
+        }
+
+        public static List<PointXY> tourPoints;
+
+        public static void Main()
+        {
+            int N = Int32.Parse(Console.ReadLine());
+            tourPoints = new List<PointXY>();
+            for (int i = 0; i < N; i++)
+            {
+                string[] lines =(Console.ReadLine().Split(' '));
+                tourPoints.Add(new PointXY
+                {
+                    X = Double.Parse(lines[0]),
+                    Y = Double.Parse(lines[1])
+                });
+            }
+            if (N < 2)
+            {
+                Console.WriteLine(0.ToString());
+                return;
+            }
+            bool[] used = new bool[N];
+            used[0] = true;
+            int best;
+            int[] tour = new int[N];
+            tour[0] = 0;
+            for (int i = 1; i < N; i++)
+            {
+                best = -1;
+                for (int j = 0; j < N; j++)
+                {
+                    if (!used[j] && 
+                        (best == -1
+                        || (GetDistanceBetweenPoints(tour[i - 1], j)
+                        < GetDistanceBetweenPoints(tour[i - 1], best)))
+                        )
+                    {
+                        best = j;
+                    }
+                }
+                tour[i] = best;
+                used[best] = true;
+            }
+            for (int i = 0; i < N; i++)
+            {
+                Console.WriteLine(tour[i].ToString());
+            }
+        }
+
+        public static long GetDistanceBetweenPoints(int index1, int index2)
+        {
+            double distX = (int)(tourPoints[index1].X - tourPoints[index2].X);
+            double distY = (int)(tourPoints[index1].Y - tourPoints[index2].Y);
+            return (Math.Abs((long)(Math.Sqrt(distX*distX + distY * distY))));
+        }
+    }
+}
